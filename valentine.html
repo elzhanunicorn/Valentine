@@ -2,9 +2,11 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>💖💖💖</title>
 
     <style>
+        /* Основные стили */
         body {
             margin: 0;
             height: 100vh;
@@ -21,23 +23,24 @@
         h1 {
             margin-bottom: 20px;
             color: #ff3366;
-            font-size: 28px;
+            font-size: 6vw; /* адаптивный для телефона */
         }
 
         img {
-            width: 300px;
+            width: 90%;       /* адаптивно для телефона */
+            max-width: 400px; /* не растягивается на больших экранах */
             height: auto;
             margin-bottom: 20px;
         }
 
         .buttons {
             display: flex;
-            gap: 20px;
+            gap: 5vw;
         }
 
         button {
-            padding: 10px 25px;
-            font-size: 18px;
+            padding: 3vw 5vw;
+            font-size: 4vw;
             cursor: pointer;
             border: none;
             border-radius: 8px;
@@ -54,7 +57,7 @@
             color: white;
         }
 
-        /* Анимация печатающегося текста */
+        /* Печатающийся текст */
         @keyframes typing {
             from { width: 0; }
             to { width: 100%; }
@@ -80,7 +83,7 @@
             animation: pulse 1s infinite;
         }
 
-        /* Сердечки падающие */
+        /* Падающие сердечки */
         .heart {
             position: absolute;
             color: red;
@@ -91,6 +94,24 @@
         @keyframes fall {
             0% { transform: translateY(-50px); opacity: 1; }
             100% { transform: translateY(400px); opacity: 0; }
+        }
+
+        /* ------------------------- */
+        /* Медиа-запрос для ПК и больших экранов */
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            button {
+                font-size: 18px;
+                padding: 10px 25px;
+            }
+
+            img {
+                width: 400px;
+                max-width: 90%;
+            }
         }
     </style>
 </head>
@@ -116,6 +137,7 @@
         let noClickCount = 0;
         let jumping = false;
 
+        // Создание падающих сердечек
         function createHeart() {
             const heart = document.createElement('span');
             heart.classList.add('heart');
@@ -127,6 +149,7 @@
             setTimeout(() => heart.remove(), 2000);
         }
 
+        // Нажатие YES
         yesBtn.addEventListener("click", () => {
             image.src = "yay.gif";
             mainText.textContent = "YAAAAAAAAAAAAAY!!!";
@@ -134,11 +157,12 @@
 
             buttonContainer.style.display = "none";
 
-            // Создаем падающие сердечки каждые 200ms
+            // Падающие сердечки каждые 200ms
             const heartInterval = setInterval(createHeart, 200);
-            setTimeout(() => clearInterval(heartInterval), 4000); // через 4 сек останавливаем
+            setTimeout(() => clearInterval(heartInterval), 4000);
         });
 
+        // Нажатие NO
         noBtn.addEventListener("click", () => {
             noClickCount++;
             image.src = "please.gif";
@@ -146,10 +170,13 @@
             mainText.textContent = "Babe please";
             mainText.className = "pulse";
 
-            // Увеличиваем кнопку YES
-            let currentSize = 18 + noClickCount * 6;
-            yesBtn.style.fontSize = currentSize + "px";
-            yesBtn.style.padding = (10 + noClickCount * 4) + "px " + (25 + noClickCount * 6) + "px";
+            // Увеличиваем кнопку YES (адаптивно)
+            let currentSize = 4 + noClickCount * 1.5; // vw для мобильных
+            if (window.innerWidth >= 768) currentSize = 18 + noClickCount*2; // px для ПК
+            yesBtn.style.fontSize = currentSize + (window.innerWidth >= 768 ? "px" : "vw");
+            let pad = 3 + noClickCount*0.5;
+            if (window.innerWidth >= 768) pad = 10 + noClickCount*2;
+            yesBtn.style.padding = pad + (window.innerWidth >= 768 ? "px " : "vw ") + pad*2 + (window.innerWidth >= 768 ? "px" : "vw");
 
             // После 5 нажатий NO кнопка NO начинает прыгать
             if (noClickCount >= 5 && !jumping) {
@@ -159,6 +186,7 @@
             }
         });
 
+        // Прыжки кнопки NO
         function jumpButton() {
             const maxX = window.innerWidth - noBtn.offsetWidth;
             const maxY = window.innerHeight - noBtn.offsetHeight;

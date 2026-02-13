@@ -9,7 +9,7 @@
         /* Основные стили */
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh; /* вместо height, чтобы не обрезалось */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +17,8 @@
             background-color: #ffe6f0;
             font-family: Arial, sans-serif;
             text-align: center;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto; /* вертикальный скролл при необходимости */
         }
 
         h1 {
@@ -26,16 +27,24 @@
             font-size: 6vw; /* адаптивный для телефона */
         }
 
-        img {
-            width: 90%;       /* адаптивно для телефона */
-            max-width: 400px; /* не растягивается на больших экранах */
-            height: auto;
+        /* Контейнер для картинки и сердечек */
+        .image-container {
+            position: relative;
+            width: 90%;
+            max-width: 400px;
             margin-bottom: 20px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         .buttons {
             display: flex;
             gap: 5vw;
+            margin-bottom: 30px;
         }
 
         button {
@@ -108,9 +117,8 @@
                 padding: 10px 25px;
             }
 
-            img {
+            .image-container {
                 width: 400px;
-                max-width: 90%;
             }
         }
     </style>
@@ -120,7 +128,9 @@
 
     <h1 id="mainText"><span class="typing">Will you be my Valentine?</span></h1>
 
-    <img id="mainImage" src="first.jpg" alt="valentine">
+    <div class="image-container">
+        <img id="mainImage" src="first.jpg" alt="valentine">
+    </div>
 
     <div class="buttons" id="buttonContainer">
         <button id="yesBtn">Yes</button>
@@ -170,7 +180,7 @@
             mainText.textContent = "Babe please";
             mainText.className = "pulse";
 
-            // Увеличиваем кнопку YES (адаптивно)
+            // Увеличиваем кнопку YES
             let currentSize = 4 + noClickCount * 1.5; // vw для мобильных
             if (window.innerWidth >= 768) currentSize = 18 + noClickCount*2; // px для ПК
             yesBtn.style.fontSize = currentSize + (window.innerWidth >= 768 ? "px" : "vw");
